@@ -240,3 +240,6 @@ hs_err_pid*
 **/.allure
 **/allure-results
 
+**/*.iml
+.idea
+
