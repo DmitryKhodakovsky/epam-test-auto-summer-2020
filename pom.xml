@@ -13,6 +13,7 @@
         <java.source.version>1.8</java.source.version>
         <java.target.version>1.8</java.target.version>
         <encoding.version>UTF-8</encoding.version>
+        <project.build.sourceEncoding>${encoding.version}</project.build.sourceEncoding>
 
         <!-- Libraries versions -->
         <testng.version>7.1.0</testng.version>
@@ -21,7 +22,8 @@
         <assertj-core.version>3.16.1</assertj-core.version>
         <cucumber.version>5.7.0</cucumber.version>
         <allure.version>2.13.5</allure.version>
-        <aspectj.version>1.8.10</aspectj.version>
+        <aspectj.version>1.9.5</aspectj.version>
+        <lombok.version>1.18.10</lombok.version>
 
         <!-- Plugins versions -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -73,6 +75,18 @@
             <version>${allure.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -86,6 +100,30 @@
                     <target>${java.target.version}</target>
                     <encoding>${encoding.version}</encoding>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
+                <configuration>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
+                    <systemPropertyVariables>
+                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${project.build.testOutputDirectory}/lesson04/AllTestsSuite.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
@@ -116,25 +154,22 @@
                     </execution>
                 </executions>
             </plugin>
+        </plugins>
+    </build>
 
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins>
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
                 <version>${allure-maven.version}</version>
                 <configuration>
                     <reportVersion>${allure.version}</reportVersion>
-                    <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
+                    <resultsDirectory>allure-results</resultsDirectory>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
-    </build>
+    </reporting>
 
 </project>

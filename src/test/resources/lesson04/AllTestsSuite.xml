@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="All tests suite">
+    <listeners>
+        <listener class-name="lesson04.listeners.ScreenshotListener"/>
+    </listeners>
+    <test name="All tests test">
+        <packages>
+            <package name="lesson04"/>
+        </packages>
+    </test>
+</suite>
